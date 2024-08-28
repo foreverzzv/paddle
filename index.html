@@ -30,22 +30,28 @@
         </form>
         <p id="result"></p>
     </div>
-
     <script>
         document.getElementById('convertForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const url = document.getElementById('urlInput').value;
             const targetService = document.getElementById('serviceSelect').value;
-
+    
             try {
                 const response = await fetch(`http://localhost:3000/convert?url=${encodeURIComponent(url)}&targetService=${targetService}`);
                 const data = await response.json();
-
+    
                 if (!response.ok) {
                     throw new Error(data.error || 'Conversion failed');
                 }
-
-                document.getElementById('result').textContent = data.convertedUrl || 'Conversion failed';
+    
+                const resultLink = data.convertedUrl;
+                document.getElementById('result').textContent = resultLink || 'Conversion failed';
+    
+                // Open the result link in a new tab if the conversion was successful
+                if (resultLink) {
+                    window.open(resultLink, '_blank');
+                }
+    
             } catch (error) {
                 console.error('Error:', error.message);
                 document.getElementById('result').textContent = error.message; // Display the specific error message
