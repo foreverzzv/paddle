@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paddle</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Paddle</h1>
+        <form id="convertForm">
+            <input type="url" id="urlInput" placeholder="give me a link..." class="input-field" required>
+            <div class="dropdown-container">
+                <label for="service-select">paddle to</label>
+                <select id="serviceSelect" class="dropdown">
+                    <option value="appleMusic">Apple Music</option>
+                    <option value="spotify">Spotify</option>
+                    <option value="yandex">Yandex</option>
+                    <option value="youtube">YouTube</option>
+                    <option value="youtubeMusic">YouTube Music</option>
+                    <option value="tidal">Tidal</option>
+                    <option value="deezer">Deezer</option>
+                    <option value="soundcloud">SoundCloud</option>
+                    <option value="amazonMusic">Amazon Music</option>
+                </select>
+            </div>
+            <button type="submit" class="go-button">GO</button>
+        </form>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        document.getElementById('convertForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const url = document.getElementById('urlInput').value;
+            const targetService = document.getElementById('serviceSelect').value;
+
+            try {
+                const response = await fetch(`http://localhost:3000/convert?url=${encodeURIComponent(url)}&targetService=${targetService}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Conversion failed');
+                }
+
+                document.getElementById('result').textContent = data.convertedUrl || 'Conversion failed';
+            } catch (error) {
+                console.error('Error:', error.message);
+                document.getElementById('result').textContent = error.message; // Display the specific error message
+            }
+        });
+    </script>
+</body>
+</html>
